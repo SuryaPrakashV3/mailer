@@ -1,0 +1,15 @@
+mailer.default_form:
+  path: '/mailer/form/default'
+  defaults:
+    _form: '\Drupal\mailer\Form\DefaultForm'
+    _title: 'DefaultForm'
+  requirements:
+    _access: 'TRUE'
+
+mailer.form_controller_showForm:
+  path: '/mailer/showForm'
+  defaults:
+    _controller: '\Drupal\mailer\Controller\FormController::showForm'
+    _title: 'Save & Notify'
+  requirements:
+    _permission: 'access content'

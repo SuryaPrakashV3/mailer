@@ -1,0 +1,7 @@
+`name: 'mailer'
+type: module
+description: 'Module to send mails'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - phpmailer

@@ -1,0 +1,16 @@
+{
+    "name": "mailer",
+    "type": "drupal-module",
+    "description": "Module to send mails",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/mailer",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/mailer",
+        "source": "http://cgit.drupalcode.org/mailer"
+    },
+    "require": {
+        "phpmailer/phpmailer": "5.2.21"
+    }
+}

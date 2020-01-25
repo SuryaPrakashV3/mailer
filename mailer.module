@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Contains mailer.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function mailer_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the mailer module.
+    case 'help.page.mailer':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Module to send mails') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mailer_theme() {
+  return [
+    'default_form' => [
+      'render element' => 'form',
+    ],
+  ];
+}
+
+/**
+* Implements hook_mail().
+*/
+function mailer_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'create_article':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+ }

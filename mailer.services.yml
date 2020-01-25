@@ -1,0 +1,6 @@
+services:
+  mailer.twig.extension:
+    class: Drupal\mailer\TwigExtension\DefaultTwigExtension
+    arguments: []
+    tags:
+      - { name: twig.extension }

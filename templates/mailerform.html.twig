@@ -1,0 +1,138 @@
+<!-- Add you custom twig html here -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    </head>
+    <body class='m-2'>
+        <form id='sendMailForm' class='container m-2' action ="#" onsubmit='sendMail()'>
+            <div class='list-group-item w-100'>
+            <label class='mt-2'> Receiver's email </label>
+            <div class='m-1 p-2 form-row'>
+            
+            {# text input for manual email entry #}
+            <input class='col col-10' type='text' name='toAddress' placeholder='Enter email address here'>
+            {# button to add it to final list #}
+            <span class="col"><input id='addAddressButton' class='m-1 col btn btn-warning' type='button' value='Add' ></span>
+            </div>
+            <label class='mt-2'> Select existing emails: </label>
+            <div class='m-1 p-1 form-row'>
+            {# selection list for getting input from node #}
+                <select id='toSelection' class='p-3 col-10 border' name='toSelection' multiple>
+                    <option class="m-1 p-2 list-group-item-action list-group-item-light">admin</option>
+                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User1</option>
+                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User2</option>
+                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User3</option>
+                </select>
+                <span class="col"><input id='addSelectionButton' class='m-1 w-100 btn btn-warning' type='button' value='Add' ></span>
+            </div>
+            {# Selected mails displayed list #}
+            <label class='mt-2'> Selected emails: </label>
+
+            <div id='toList' class='m-2 p-1 form-row '>
+                <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>Admin</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div>
+                <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>User1</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div>
+                <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>User2</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div>
+            </div>
+            {# hidden fom input for passing emails finally#}
+            <input id='toFinal' type='text' style='' value='' name='to'>
+            {{form.to}}
+            {# End of email fields #}
+            </div>
+            {# textarea to enter mail body #}
+            <div class='form-row m-1 p-2'>
+             <label> Comments: </label>
+             <textarea form='sendMailForm' placeholder="Enter comments here" class='w-100' rows="4" > </textarea> </div>
+            
+            <div class='m-1 p-2 form-row'><div class='col-12'>
+                {# button to cancel operation #}
+                <input class='btn btn-light' type='button' value='Cancel'>
+                {# button to save article and send mails #}
+                <input class='float-right btn btn-warning' type='button' value='Save and Notify' onclick='sendMail()'>
+                {# button to save article without sending mails #}
+                <input class='float-right btn btn-light' type='button' value='Save'>
+            </div></div>
+        </form>
+<script>
+    {# function to remove address from displayed list #}
+    function removeAddress(removeButton) {
+        let address = removeButton.parentNode.childNodes[0].textContent;
+        console.log("address " + address);
+        // let listArr = $("input[name='to']").val().split(";");
+        // let newList = "";
+        
+        // listArr.forEach((value, index) => {
+        //     listArr = $("input[name='to']").val().split(";");
+        //     if(!(value===address)) {
+        //         console.log(value);
+        //         newList.concat(value);
+        //         if(index===listArr.length - 1) {newList.concat(";");}
+        //     }
+        // });
+        // $("input[name=to]").val(newList);
+        // removeButton.parentNode.remove();
+        // console.log("rmv"+address);
+    }
+    {# function to insert into displayed list in division #}
+    function insertArrayIntoDisplayedList(newAddress) {
+        $("#toList").append(`<div class='col-12 m-2 p-2 list-group-item list-group-item-white'>
+            <span>${newAddress}</span>
+            <button type='button' onclick="removeAddress(this)" class='close float-right'>&times;</button>
+        </div>`);
+        console.log()
+    }
+    
+    {# function to insert emails into hidden input field #}
+    function insertArrayIntoHiddenList(listNew) {
+        let listStr = $("input[name='to']").val();
+
+        listNew.forEach((value, index, array)=> {
+            if(listStr === '') {
+                listStr = value.trim();
+                insertArrayIntoDisplayedList(value.trim());
+            } else if(listStr.search(value.trim()) < 0) {
+                listStr += ";" + value.trim();
+                insertArrayIntoDisplayedList(value.trim());
+            }
+        });
+        $("input[name='to']").val(listStr)
+        console.log($("input[name='to']").val());
+    }
+
+    {# Event action for adding manual address input #}
+    $('#addAddressButton').click(()=> {        
+        let listNew = $("input[name='toAddress']").val().split(";");
+        insertArrayIntoHiddenList(listNew);
+    });
+
+    {# Event action for adding selected options #}
+    $("#addSelectionButton").click(() => {
+        let listNew = [];
+        let options = $("#toSelection option:selected");
+        options.map((key, value) => {
+            listNew.push(options[key].value);
+
+        });
+        insertArrayIntoHiddenList(listNew);
+    });
+
+    function sendMail() {
+        let to = $("input[name='to']").val();
+        let body = $("textarea[form='sendMailForm']");
+        //$user = user};
+        //$service = {service};
+        //$msg = {messenger};
+
+        console.log(user.getUserName());
+    }
+
+</script>
+    </body>
+</html>
