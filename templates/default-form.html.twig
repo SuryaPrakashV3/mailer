@@ -17,61 +17,58 @@
     </head>
     <body class='m-2'>
         <form id='sendMailForm' class='container m-2' action ="#" onsubmit='sendMail()'>
+{#-------------------------- Add email block --------------------------#}
             <div class='list-group-item w-100'>
-            <label class='mt-2'> Receiver's email </label>
-            <div class='m-1 p-2 form-row'>
-            
-            {# text input for manual email entry #}
-            <input class='col col-10' type='text' name='toAddress' placeholder='Enter email address here'>
-            {# button to add it to final list #}
-            <span class="col"><input id='addAddressButton' class='m-1 col btn btn-warning' type='button' value='Add' ></span>
-            </div>
-            <label class='mt-2'> Select existing emails: </label>
-            <div class='m-1 p-1 form-row'>
-            {# selection list for getting input from node #}
-            {{ form.selection }}
-                {# <select id='toSelection' class='p-3 col-10 border' name='toSelection' multiple>
-                    <option class="m-1 p-2 list-group-item-action list-group-item-light">admin</option>
-                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User1</option>
-                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User2</option>
-                    <option class="m-1 p-2 list-group-item-action list-group-item-light">User3</option>
-                </select> #}
-                <span class="col"><input id='addSelectionButton' class='m-1 w-100 btn btn-warning' type='button' value='Add' ></span>
-            </div>
-            {# Selected mails displayed list #}
-            <label class='mt-2'> Selected emails: </label>
+                {#------------- textfield entry -------------#}
+                <label class='mt-2'> Receiver's email </label>
+                <div class='m-1 p-2 form-row'>
+                    {# text input for manual email entry #}
+                    <input class='col col-10' type='text' name='toAddress' placeholder='Enter email address(seperated by ";")'>
+                    {# button to add it to final list #}
+                    <span class="col"><input id='addAddressButton' class='m-1 col btn btn-warning' type='button' value='Add' ></span>
+                </div>
 
-            <div id='toList' class='m-2 p-1 form-row '>
+                {#------------- selection entry -------------#}
+                <label class='mt-2'> Select existing emails: </label>
+                <div class='m-1 p-1 form-row'>
+                {# selection list for getting input from node #}
+                    {{ form.selection }}
+                    <span class="col"><input id='addSelectionButton' class='m-1 w-100 btn btn-warning' type='button' value='Add' ></span>
+                </div>
+
+                {#------------- Displayed list -------------#}
+                {# Selected mails displayed list #}
+                <label class='mt-2'> Selected emails: </label>
+
+                <div id='toList' class='m-2 p-3 form-row border'>
                     
-                    {# <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>Admin</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div>
-                    <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>User1</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div>
-                    <div class='col-12 m-2 p-2 list-group-item list-group-item-white'><span>User2</span><button type='button' onclick="removeAddress(this);" class='float-right close'>&times;</button></div> #}
+                </div>
+                {#------------- Hidden list textfield -------------#}
+                {{form.to}}
+                {# End of email fields #}
             </div>
-            {# hidden fom input for passing emails finally#}
-            {# <input id='toFinal' type='text' style='display:none' value='' name='to'> #}
-            {{form.to}}
-            {# End of email fields #}
-            </div>
-            {# textarea to enter mail body #}
+            
+            {#-------------------------- Mail body textarea --------------------------#}
             <div class='form-row m-1 p-2'>
-             {{ form.body }}
+            {{ form.body }}
             
             <div class='m-1 p-2 form-row w-100'><div class='w-100 col-12 btn-group'>
                 {# button to cancel operation #}
-                <div><input class='button btn btn-white' type='button' value='Cancel'></div>
-                <div class='col-5'>&nbsp;</div>
+                <div> <input class='button btn btn-white' type='button' value='Cancel'> </div> {# @todo: add function for cancel creating an article #}
+                <div class='col-5'> &nbsp; </div>
                 <div class='w-100 btn-group'>
-                {# button to save article without sending mails #}
-                <input class='button btn btn-white' type='button' value='Save'>
-                {# button to save article and send mails #}
-                {{ form.submit }}
+                    {# button to save article without sending mails #}
+                    <input class='button btn btn-white' type='button' value='Save' > {# @todo: add function for saving without notify #}
+                    {# button to save article and send mails #}
+                    {{ form.submit }}
                 </div>
-            </div></div>
-            
+            </div>
         </form>
+
+
 <script>
 
-    {# function to remove address from displayed list #}
+{#-------------------------- function to remove address from displayed list --------------------------#}
     function removeAddress(removeButton) {
         let address = removeButton.previousSibling.previousSibling.textContent;
         console.log(`Removing ${address} ...`);
@@ -80,33 +77,33 @@
         listArr.forEach((value, index) => {
             if(!(value===address)) {
                 newList += (value);
-                if(index < listArr.length) {newList += (";");}
+                if(index < listArr.length) {newList += (",");}
             }
         });
-
         $("input[name=to]").val(newList.slice(0,-1));
         removeButton.parentNode.remove();
         console.log(`Output: ${$("input[name=to]").val()} .`);
     }
-    {# function to insert into displayed list in division #}
+
+{#-------------------------- function to insert into displayed list in division --------------------------#}
     function insertArrayIntoDisplayedList(newAddress) {
-        $("#toList").append(`<div class='col-12 m-2 p-2 list-group-item list-group-item-white'>
+        $("#toList").append(`<div class='col-12 m-1 p-2 list-group-item list-group-item-white'>
             <span>${newAddress}</span>
             <button type='button' onclick="removeAddress(this)" class='close float-right'>&times;</button>
         </div>`);
         console.log(`Added ${newAddress}`)
     }
     
-    {# function to insert emails into hidden input field #}
+
+{#-------------------------- function to insert emails into hidden input field --------------------------#}
     function insertArrayIntoHiddenList(listNew) {
         let listStr = $("input[name='to']").val();
-
         listNew.forEach((value, index, array)=> {
             if(listStr === '') {
                 listStr = value.trim();
                 insertArrayIntoDisplayedList(value.trim());
             } else if(listStr.search(value.trim()) < 0) {
-                listStr += ";" + value.trim();
+                listStr += "," + value.trim();
                 insertArrayIntoDisplayedList(value.trim());
             }
         });
@@ -126,29 +123,16 @@
         let options = $("select[name='selection'] option:selected");
         options.map((key, value) => {
             listNew.push(options[key].value);
-
         });
         insertArrayIntoHiddenList(listNew);
     });
-    $(document).ready(() => {
-    });
-
-    function sendMail() {
-        let to = $("input[name='to']").val();
-        let body = $("textarea[form='sendMailForm']");
-        //$user = user};
-        //$service = {service};
-        //$msg = {messenger};
-
-        console.log(user.getUserName());
-    }
-
 </script>
+
 <style>
     .form-item-to, .hidden {
         display: none;
     }
-    .form-item-selection, .form-select {
+    .form-item-selection, .form-select, .form-textarea-wrapper, .form-textarea, .form-type-textarea {
         width: 100%;
     }
     select[name='selection'] option {

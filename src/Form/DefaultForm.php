@@ -13,7 +13,7 @@ class DefaultForm extends FormBase {
   public $receiverMail = ['surya99var@gmail.com' => 'surya', 'sathyavpm06@gmail.com' => 'sathya', 'mailaddress@mail.com' => 'username'];
   public $senderAddress = "surya99var@gmail.com";
   public $subject = "";
-  public $body = "default body";
+  public $body = "";
 
   /**
    * {@inheritdoc}
@@ -32,14 +32,13 @@ class DefaultForm extends FormBase {
       '#type' => 'textfield',
       '#attributes' => array('class' => array('hidden')),
       '#id' => 'toFinal',
-      '#maxlength' => 64,
-      '#size' => 64,
+      '#maxlength' => 1024,
+      '#size' => 128,
       '#weight' => '0',
     ];
 
     $form['selection'] = [
       '#type' => 'select',
-      // '#title' => $this->t('Select from available emails:\n'),
       '#options' => $this->receiverMail,
       '#size' => 5,
       '#weight' => '0',
@@ -75,7 +74,7 @@ class DefaultForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Display result.
+    // Send mail notifications.
 
     $user = \Drupal::currentUser();
     
@@ -87,7 +86,6 @@ class DefaultForm extends FormBase {
     
     // Getting Form data
     foreach ($form_state->getValues() as $key => $value) {
-      // \Drupal::messenger()->addMessage($key . ': ' . ($key === 'text_format'?$value['value']:$value));
       if($key === 'to') {
         $this->receiverMail = $value;
       } elseif($key === 'body') {
@@ -109,7 +107,7 @@ class DefaultForm extends FormBase {
       \Drupal::messenger()->addMessage(('There was a problem sending your message and it was not sent.'), 'error');
     }
     else {
-      \Drupal::messenger()->addMessage(('Your message has been sent.'));
+      \Drupal::messenger()->addMessage(('Your message has been sent to: '.$this->receiverMail));
     }
   }
 }
