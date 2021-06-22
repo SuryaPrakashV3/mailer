@@ -11,6 +11,6 @@
         "source": "http://cgit.drupalcode.org/mailer"
     },
     "require": {
-        "phpmailer/phpmailer": "5.2.21"
+        "phpmailer/phpmailer": "6.5.0"
     }
 }
